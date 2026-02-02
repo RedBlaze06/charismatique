@@ -1,149 +1,145 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<title>Charismatique</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Charismatique</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-*{box-sizing:border-box}
+    <style>
+        * { box-sizing: border-box; }
 
-body{
-    margin:0;
-    height:100vh;
-    overflow:hidden;
-    font-family:Arial, sans-serif;
-    display:flex;
-    justify-content:center;
-    align-items:center;
+        body {
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle at center,
+                #ffffff 0%,
+                #ffe4ec 30%,
+                #ffb6c1 55%,
+                #ff69b4 75%,
+                #ffb6c1 100%
+            );
+        }
 
-    background:
-        radial-gradient(circle at center,
-            #ffffff 0%,
-            #ffe4ec 30%,
-            #ffb6c1 55%,
-            #ff69b4 75%,
-            #ffb6c1 100%);
-}
+        /* CONTENEUR */
+        .container {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
 
-/* CONTENEUR */
-.container{
-    position:relative;
-    z-index:2;
-    text-align:center;
-}
+        h1 {
+            font-size: 52px;
+            margin-bottom: 30px;
+            color: white;
+            text-shadow:
+                0 0 10px white,
+                0 0 30px pink,
+                0 0 60px hotpink;
+        }
 
-h1{
-    font-size:52px;
-    margin-bottom:30px;
-    color:white;
-    text-shadow:
-        0 0 10px white,
-        0 0 30px pink,
-        0 0 60px hotpink;
-}
+        /* IMAGE */
+        .photo {
+            max-width: 80vw;
+            max-height: 65vh;
+            border-radius: 20px;
+            box-shadow:
+                0 0 40px rgba(255,255,255,0.9),
+                0 0 100px rgba(255,182,193,0.9),
+                0 0 180px rgba(255,105,180,0.8);
+            cursor: pointer;
+        }
 
-/* IMAGE */
-.photo{
-    max-width:80vw;
-    max-height:65vh;
-    border-radius:20px;
-    box-shadow:
-        0 0 40px rgba(255,255,255,0.9),
-        0 0 100px rgba(255,182,193,0.9),
-        0 0 180px rgba(255,105,180,0.8);
-    cursor:pointer;
-}
+        /* PÉTALES */
+        .petal {
+            position: fixed;
+            top: -40px;
+            width: 22px;
+            height: 22px;
+            background: radial-gradient(circle at top left, #fff, #ffb6c1, #ff69b4);
+            border-radius: 50% 50% 50% 0;
+            opacity: 0.85;
+            pointer-events: none;
+            animation: fall linear infinite;
+        }
 
-/* PÉTALES */
-.petal{
-    position:fixed;
-    top:-40px;
-    width:22px;
-    height:22px;
-    background:
-        radial-gradient(circle at top left,
-            #fff,
-            #ffb6c1,
-            #ff69b4);
-    border-radius:50% 50% 50% 0;
-    opacity:0.85;
-    pointer-events:none;
-    animation:fall linear infinite;
-}
-
-@keyframes fall{
-    from{
-        transform:translateY(-50px) rotate(0deg);
-    }
-    to{
-        transform:translateY(120vh) rotate(360deg);
-    }
-}
-</style>
+        @keyframes fall {
+            from { transform: translateY(-50px) rotate(0deg); }
+            to   { transform: translateY(120vh) rotate(360deg); }
+        }
+    </style>
 </head>
 
 <body>
 
-<div class="container">
-    <h1>CHARISMATIQUE</h1>
+    <div class="container">
+        <h1>CHARISMATIQUE</h1>
+        <img src="Faux_autoportrait_Osrin-3°6.jpg" class="photo" id="photo" alt="romantique">
+    </div>
 
-    <img
-        src="Faux_autoportrait_Osrin-3°6.jpg"
-        class="photo"
-        id="photo"
-        alt="romantique">
-</div>
+    <audio id="music" loop>
+        <source src="George_Michael_Careless_Whisper_Remastered_Ringtone_(by Fringster.com).mp3" type="audio/mpeg">
+    </audio>
 
-<audio id="music" loop>
-    <source src="George_Michael_Careless_Whisper_Remastered_Ringtone_(by Fringster.com).mp3" type="audio/mpeg">
-</audio>
+    <script>
+        const music = document.getElementById("music");
+        let petalsInterval = null;
 
-<script>
-const music = document.getElementById("music");
-const photo = document.getElementById("photo");
+        /* LANCEMENT APRÈS PREMIER CLIC N’IMPORTE OÙ */
+        document.addEventListener("click", startAll, { once: true });
 
-let petalsInterval = null;
+        function startAll() {
+            music.volume = 1;
+            music.play().catch(() => {});
+            startPetals();
+        }
 
-/* DÉMARRAGE AU CLIC */
-photo.addEventListener("click", () => {
-    music.volume = 1;
-    music.play().catch(()=>{});
-    startPetals();
-});
+        /* STOP SI ON CHANGE D’ONGLET */
+        document.addEventListener("visibilitychange", () => {
+            if (document.hidden) {
+                music.pause();
+                stopPetals();
+            } else {
+                music.play().catch(() => {});
+                startPetals();
+            }
+        });
 
-/* STOP SI ON CHANGE D’ONGLET */
-document.addEventListener("visibilitychange", () => {
-    if (document.hidden) {
-        music.pause();
-        stopPetals();
-    } else {
-        music.play().catch(()=>{});
-        startPetals();
-    }
-});
+        /* CRÉATION D’UN PÉTALE */
+        function createPetal() {
+            const p = document.createElement("div");
+            p.className = "petal";
+            p.style.left = Math.random() * 100 + "vw";
+            p.style.animationDuration = 6 + Math.random() * 5 + "s";
+            p.style.transform = `scale(${0.6 + Math.random()})`;
+            document.body.appendChild(p);
 
-/* PÉTALES */
-function createPetal(){
-    const p = document.createElement("div");
-    p.className = "petal";
-    p.style.left = Math.random()*100 + "vw";
-    p.style.animationDuration = 6 + Math.random()*5 + "s";
-    p.style.transform = `scale(${0.6 + Math.random()})`;
-    document.body.appendChild(p);
-    setTimeout(()=>p.remove(),12000);
-}
+            setTimeout(() => p.remove(), 12000);
+        }
 
-function startPetals(){
-    if(petalsInterval) return;
-    petalsInterval = setInterval(createPetal,150);
-}
+        /* DÉMARRER LA PLUIE DE PÉTALES */
+        function startPetals() {
+            if (petalsInterval) return;
 
-function stopPetals(){
-    clearInterval(petalsInterval);
-    petalsInterval = null;
-}
-</script>
+            /* 🌸 BOOST : pluie instantanée au démarrage */
+            for (let i = 0; i < 20; i++) {
+                createPetal();
+            }
+
+            /* 🌸 pluie continue */
+            petalsInterval = setInterval(createPetal, 150);
+        }
+
+        /* STOP */
+        function stopPetals() {
+            clearInterval(petalsInterval);
+            petalsInterval = null;
+        }
+    </script>
 
 </body>
 </html>
