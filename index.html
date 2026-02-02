@@ -2,108 +2,163 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Romance</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Romance Divine</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 <style>
 *{box-sizing:border-box}
 
 body{
     margin:0;
+    min-height:100vh;
     overflow:hidden;
-    height:100vh;
     font-family:Arial, sans-serif;
     background:
-        linear-gradient(120deg,
-        #ffe6f0,
-        #ffd1dc,
-        #fff0f5);
-    background-size:400% 400%;
-    animation:bgMove 10s ease infinite;
-}
-
-/* Dégradé animé */
-@keyframes bgMove{
-    0%{background-position:0% 50%}
-    50%{background-position:100% 50%}
-    100%{background-position:0% 50%}
-}
-
-/* Image centrale */
-.center{
-    position:absolute;
-    inset:0;
+        radial-gradient(circle at center,
+            rgba(255,255,255,0.95) 0%,
+            rgba(255,182,193,0.85) 35%,
+            rgba(255,105,180,0.6) 60%,
+            rgba(0,0,0,0.95) 100%);
     display:flex;
     justify-content:center;
     align-items:center;
+    color:white;
+}
+
+/* CONTENEUR */
+.container{
+    position:relative;
     z-index:2;
+    text-align:center;
 }
 
+h1{
+    font-size:48px;
+    margin-bottom:30px;
+    text-shadow:
+        0 0 15px white,
+        0 0 30px pink;
+}
+
+/* IMAGE */
 .photo{
-    max-width:70vw;
-    max-height:80vh;
-    border-radius:20px;
+    max-width:80vw;
+    max-height:65vh;
+    border-radius:22px;
     box-shadow:
-        0 0 40px rgba(255,192,203,.9),
-        0 0 120px rgba(255,182,193,.6);
+        0 0 40px rgba(255,255,255,0.9),
+        0 0 90px rgba(255,182,193,0.9),
+        0 0 160px rgba(255,105,180,0.7);
+    cursor:pointer;
 }
 
-/* Pétales */
+.tap{
+    margin-top:20px;
+    font-size:16px;
+    opacity:0.85;
+}
+
+/* PÉTALES */
 .petal{
-    position:absolute;
-    top:-10%;
-    font-size:24px;
+    position:fixed;
+    top:-50px;
+    width:18px;
+    height:18px;
+    background:radial-gradient(circle at top left,
+        #fff,
+        #ffb6c1,
+        #ff69b4);
+    border-radius:50% 50% 50% 0;
     opacity:0.8;
     animation:fall linear infinite;
+    pointer-events:none;
 }
 
 @keyframes fall{
-    0%{
-        transform:translateX(0) rotate(0deg);
-        top:-10%;
+    from{
+        transform:translateY(-60px) rotate(0deg);
     }
-    100%{
-        transform:translateX(100px) rotate(360deg);
-        top:110%;
+    to{
+        transform:translateY(120vh) rotate(360deg);
     }
 }
-
-/* Audio invisible */
-audio{display:none}
 </style>
 </head>
 
 <body>
 
-<!-- Musique (mets TON mp3) -->
-<audio autoplay loop>
-    <source src="music.mp3" type="audio/mpeg">
-</audio>
+<div class="container">
+    <h1>VOUS VOUS ÊTES FAIT AVOIR</h1>
 
-<!-- Image -->
-<div class="center">
-    <img src="moi.png" class="photo" alt="romantique">
+    <img
+        src="Faux_autoportrait_Osrin-3°6.jpg"
+        class="photo"
+        id="photo"
+        alt="Romance">
+
+    <div class="tap">Clique sur l’image 🎷</div>
 </div>
 
-<script>
-// Générateur de pétales 🌸
-const petals = ["🌸","🌺","🌷","💮"];
+<!-- MUSIQUE -->
+<audio id="music" loop>
+    <source src="George_Michael_Careless_Whisper_Remastered_Ringtone_(by Fringster.com).mp3" type="audio/mpeg">
+</audio>
 
+<script>
+const music = document.getElementById("music");
+const photo = document.getElementById("photo");
+
+let petalsActive = false;
+let petalInterval = null;
+
+/* DÉMARRAGE */
+photo.addEventListener("click", () => {
+    music.volume = 1.0; // volume max AUTORISÉ
+    music.play();
+    startPetals();
+});
+
+/* BOUCLE FORCÉE (sécurité) */
+music.addEventListener("ended", () => {
+    music.currentTime = 0;
+    music.play();
+});
+
+/* STOP SI ON QUITTE L’ONGLET */
+document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+        music.pause();
+        stopPetals();
+    } else {
+        music.play();
+        startPetals();
+    }
+});
+
+/* PÉTALES */
 function createPetal(){
-    const p=document.createElement("div");
-    p.className="petal";
-    p.textContent=petals[Math.floor(Math.random()*petals.length)];
-    p.style.left=Math.random()*100+"vw";
-    p.style.animationDuration=5+Math.random()*5+"s";
-    p.style.fontSize=16+Math.random()*24+"px";
+    const p = document.createElement("div");
+    p.className = "petal";
+    p.style.left = Math.random()*100 + "vw";
+    p.style.animationDuration = 6 + Math.random()*6 + "s";
+    p.style.opacity = 0.4 + Math.random()*0.6;
+    p.style.transform = `scale(${0.5 + Math.random()})`;
     document.body.appendChild(p);
 
-    setTimeout(()=>p.remove(),10000);
+    setTimeout(()=>p.remove(),12000);
 }
 
-setInterval(createPetal,200);
+function startPetals(){
+    if(petalsActive) return;
+    petalsActive = true;
+    petalInterval = setInterval(createPetal,200);
+}
+
+function stopPetals(){
+    petalsActive = false;
+    clearInterval(petalInterval);
+}
 </script>
 
 </body>
 </html>
-
