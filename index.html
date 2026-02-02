@@ -54,7 +54,7 @@
             cursor: pointer;
         }
 
-        /* PÉTALES */
+        /* PÉTALES AU PREMIER PLAN */
         .petal {
             position: fixed;
             top: -40px;
@@ -65,6 +65,7 @@
             opacity: 0.85;
             pointer-events: none;
             animation: fall linear infinite;
+            z-index: 9999; /* 🌸 ICI : pétales devant tout */
         }
 
         @keyframes fall {
@@ -77,6 +78,7 @@
 <body>
 
     <div class="container">
+        <h1>CHARISMATIQUE</h1>
         <img src="Faux_autoportrait_Osrin-3°6.jpg" class="photo" id="photo" alt="romantique">
     </div>
 
