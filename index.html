@@ -1,1 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Romance</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{box-sizing:border-box}
+
+body{
+    margin:0;
+    overflow:hidden;
+    height:100vh;
+    font-family:Arial, sans-serif;
+    background:
+        linear-gradient(120deg,
+        #ffe6f0,
+        #ffd1dc,
+        #fff0f5);
+    background-size:400% 400%;
+    animation:bgMove 10s ease infinite;
+}
+
+/* Dégradé animé */
+@keyframes bgMove{
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+
+/* Image centrale */
+.center{
+    position:absolute;
+    inset:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:2;
+}
+
+.photo{
+    max-width:70vw;
+    max-height:80vh;
+    border-radius:20px;
+    box-shadow:
+        0 0 40px rgba(255,192,203,.9),
+        0 0 120px rgba(255,182,193,.6);
+}
+
+/* Pétales */
+.petal{
+    position:absolute;
+    top:-10%;
+    font-size:24px;
+    opacity:0.8;
+    animation:fall linear infinite;
+}
+
+@keyframes fall{
+    0%{
+        transform:translateX(0) rotate(0deg);
+        top:-10%;
+    }
+    100%{
+        transform:translateX(100px) rotate(360deg);
+        top:110%;
+    }
+}
+
+/* Audio invisible */
+audio{display:none}
+</style>
+</head>
+
+<body>
+
+<!-- Musique (mets TON mp3) -->
+<audio autoplay loop>
+    <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<!-- Image -->
+<div class="center">
+    <img src="moi.png" class="photo" alt="romantique">
+</div>
+
+<script>
+// Générateur de pétales 🌸
+const petals = ["🌸","🌺","🌷","💮"];
+
+function createPetal(){
+    const p=document.createElement("div");
+    p.className="petal";
+    p.textContent=petals[Math.floor(Math.random()*petals.length)];
+    p.style.left=Math.random()*100+"vw";
+    p.style.animationDuration=5+Math.random()*5+"s";
+    p.style.fontSize=16+Math.random()*24+"px";
+    document.body.appendChild(p);
+
+    setTimeout(()=>p.remove(),10000);
+}
+
+setInterval(createPetal,200);
+</script>
+
+</body>
+</html>
 
